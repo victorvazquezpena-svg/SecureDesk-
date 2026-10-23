@@ -1,0 +1,29 @@
+# Configuración local
+.env
+config/local.php
+
+# Logs
+logs/*
+!logs/.gitkeep
+
+# Archivos subidos
+uploads/*
+!uploads/.gitkeep
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+
+# Archivos temporales
+*.tmp
+*.temp
+*.log
+
+# Dependencias futuras
+vendor/
+node_modules/
