@@ -383,3 +383,335 @@ Cuando se implemente el CRUD de tickets se añadirán:
 - Pruebas automáticas con `pytest`.
 
 Las pruebas manuales documentadas en este archivo servirán posteriormente como referencia para crear las pruebas automáticas.
+
+
+# PR-09 — Consultar tickets sin sesión
+
+## Objetivo
+
+Comprobar que un usuario no autenticado no puede consultar los tickets.
+
+## Comando utilizado
+
+```powershell
+Invoke-RestMethod `
+    -Uri "http://127.0.0.1:8081/api/items" `
+    -Method GET
+```
+
+## Resultado esperado
+
+Código HTTP:
+
+```text
+401 Unauthorized
+```
+
+Respuesta:
+
+```json
+{
+  "error": "usuario no autenticado"
+}
+```
+
+## Resultado obtenido
+
+La API rechazó correctamente la petición al no existir una sesión activa.
+
+**Estado: ✅ Superada**
+
+---
+
+# PR-10 — Consultar tickets con sesión y sin datos
+
+## Objetivo
+
+Comprobar que un usuario autenticado puede consultar sus tickets.
+
+Después de registrar e iniciar sesión con el usuario `victor`, se guarda la sesión utilizando `-SessionVariable`.
+
+## Login utilizado
+
+```powershell
+$body = @{
+    username = "victor"
+    password = "Clave-1234"
+} | ConvertTo-Json
+
+Invoke-RestMethod `
+    -Uri "http://127.0.0.1:8081/api/login" `
+    -Method POST `
+    -ContentType "application/json" `
+    -Body $body `
+    -SessionVariable novaSession
+```
+
+## Consulta de tickets
+
+```powershell
+Invoke-RestMethod `
+    -Uri "http://127.0.0.1:8081/api/items" `
+    -Method GET `
+    -WebSession $novaSession
+```
+
+## Resultado esperado
+
+Código HTTP:
+
+```text
+200 OK
+```
+
+Al no existir todavía tickets del usuario, la API devuelve una lista vacía:
+
+```json
+[]
+```
+
+## Resultado obtenido
+
+La petición se realizó correctamente y no se devolvieron tickets.
+
+**Estado: ✅ Superada**
+
+---
+
+# PR-11 — Crear un ticket correctamente
+
+## Objetivo
+
+Comprobar que un usuario autenticado puede crear una nueva incidencia.
+
+## Datos utilizados
+
+```powershell
+$ticket = @{
+    title = "No funciona la VPN"
+    text = "No consigo conectarme desde casa"
+    category = "Red"
+    priority = "Alta"
+} | ConvertTo-Json
+```
+
+## Petición
+
+```powershell
+Invoke-RestMethod `
+    -Uri "http://127.0.0.1:8081/api/items" `
+    -Method POST `
+    -ContentType "application/json" `
+    -Body $ticket `
+    -WebSession $novaSession
+```
+
+## Resultado esperado
+
+Código HTTP:
+
+```text
+201 Created
+```
+
+El ticket debe crearse automáticamente con:
+
+- Un identificador único.
+- El usuario autenticado como propietario.
+- Estado inicial `Abierta`.
+- Fecha de creación.
+- Fecha de modificación.
+
+## Resultado obtenido
+
+Se creó correctamente el ticket:
+
+```text
+id         : 1
+title      : No funciona la VPN
+text       : No consigo conectarme desde casa
+category   : Red
+priority   : Alta
+status     : Abierta
+```
+
+Las fechas `created_at` y `updated_at` fueron generadas automáticamente.
+
+**Estado: ✅ Superada**
+
+---
+
+# PR-12 — Listar tickets después de crear uno
+
+## Objetivo
+
+Comprobar que el ticket creado aparece posteriormente al consultar las incidencias del usuario autenticado.
+
+## Comando utilizado
+
+```powershell
+Invoke-RestMethod `
+    -Uri "http://127.0.0.1:8081/api/items" `
+    -Method GET `
+    -WebSession $novaSession
+```
+
+## Resultado esperado
+
+Código HTTP:
+
+```text
+200 OK
+```
+
+La respuesta debe incluir el ticket creado anteriormente.
+
+## Resultado obtenido
+
+La API devolvió correctamente el ticket con `id = 1`.
+
+**Estado: ✅ Superada**
+
+---
+
+# PR-13 — Crear ticket con categoría no válida
+
+## Objetivo
+
+Comprobar que el backend rechaza categorías que no forman parte de las opciones permitidas.
+
+## Ejemplo utilizado
+
+```powershell
+$ticket = @{
+    title = "Problema de prueba"
+    text = "Ticket con categoría incorrecta"
+    category = "Patatas"
+    priority = "Alta"
+} | ConvertTo-Json
+```
+
+## Resultado esperado
+
+Código HTTP:
+
+```text
+400 Bad Request
+```
+
+Respuesta:
+
+```json
+{
+  "error": "categoría no válida"
+}
+```
+
+**Estado: ✅ Superada**
+
+---
+
+# PR-14 — Crear ticket con prioridad no válida
+
+## Objetivo
+
+Comprobar que la API únicamente acepta las prioridades definidas por la aplicación.
+
+## Ejemplo utilizado
+
+```powershell
+$ticket = @{
+    title = "Problema de prueba"
+    text = "Ticket con prioridad incorrecta"
+    category = "Red"
+    priority = "Urgentísima"
+} | ConvertTo-Json
+```
+
+## Resultado esperado
+
+Código HTTP:
+
+```text
+400 Bad Request
+```
+
+Respuesta:
+
+```json
+{
+  "error": "prioridad no válida"
+}
+```
+
+**Estado: ✅ Superada**
+
+---
+
+# PR-15 — Crear ticket con campos obligatorios incompletos
+
+## Objetivo
+
+Comprobar que el servidor valida que todos los campos obligatorios estén presentes.
+
+## Ejemplo utilizado
+
+En esta prueba se omite el campo `text`.
+
+```powershell
+$ticket = @{
+    title = "Problema de prueba"
+    category = "Red"
+    priority = "Alta"
+} | ConvertTo-Json
+```
+
+## Resultado esperado
+
+Código HTTP:
+
+```text
+400 Bad Request
+```
+
+Respuesta:
+
+```json
+{
+  "error": "datos no válidos"
+}
+```
+
+**Estado: ✅ Superada**
+
+---
+
+# Resumen actualizado
+
+| ID | Prueba | Código esperado | Estado |
+|---|---|---:|---|
+| PR-09 | Consultar tickets sin sesión | 401 | ✅ |
+| PR-10 | Consultar tickets con sesión | 200 | ✅ |
+| PR-11 | Crear ticket válido | 201 | ✅ |
+| PR-12 | Listar ticket creado | 200 | ✅ |
+| PR-13 | Categoría no válida | 400 | ✅ |
+| PR-14 | Prioridad no válida | 400 | ✅ |
+| PR-15 | Campos obligatorios incompletos | 400 | ✅ |
+
+## Estado actual del CRUD
+
+Actualmente están implementadas y probadas las siguientes operaciones:
+
+```text
+GET  /api/items   ✅
+POST /api/items   ✅
+```
+
+Quedan pendientes para la siguiente sesión:
+
+```text
+PUT    /api/items/{id}
+DELETE /api/items/{id}
+```
+
+También queda pendiente comprobar el aislamiento completo entre usuarios, de forma que un usuario no pueda modificar ni eliminar tickets pertenecientes a otra cuenta.

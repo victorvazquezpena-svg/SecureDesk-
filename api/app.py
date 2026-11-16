@@ -4,7 +4,7 @@
 # session nos permite recordar qué usuario ha iniciado sesión.
 from flask import Flask, request, jsonify, session
 
-# generate_password_hash transforma una contraseña transforma una contraseña en un hash seguro.
+# generate_password_hash transforma una contraseña en un hash seguro.
 # check_password_hash permite comprobar si una contraseña coincide con ese hash.
 from werkzeug.security import generate_password_hash, check_password_hash
 
