@@ -385,3 +385,231 @@ def create_item():
 
     # Ticket creado correctamente.
     return jsonify(respuesta), 201
+
+
+# -------------------------------------------------------------------
+# MODIFICAR TICKET
+# -------------------------------------------------------------------
+# Esta ruta permite modificar un ticket existente.
+
+# Ejemplo:
+#
+# PUT /api/items/1
+#
+# El número que aparece al final de la URL corresponde al ID del ticket.
+#
+# Flask recoge automáticamente ese número gracias a:
+#
+# <int:ticket_id>
+#
+# Si hacemos:
+#
+# PUT /api/items/3
+#
+# entonces:
+#
+# ticket_id = 3
+#
+
+@app.put("/api/items/<int:ticket_id>")
+def update_item(ticket_id):
+
+    # Antes de modificar nada comprobamoos que haya un usuario autenticado.
+    #
+    # Si no existe "username" dentro de session,
+    # significa que el usuario no ha iniciado sesión.
+    if "username" not in session:
+        return jsonify({
+            "error": "usuario no autenticado"
+        }), 401
+
+    # -------------------------------------------------------------------
+    # BUSCAR EL TICKET
+    # -------------------------------------------------------------------
+    
+    # Inicialmente suponemos que no hemos encontrado ningún ticket.
+    ticket_encontrado = None
+
+    # Recorremos uno por uno todos los tickets guardados en memoria.
+    for ticket in tickets:
+        # Comparamos el ID del ticket actual con el ID recibido en la URL.
+        #
+        # Ejemplo:
+        #
+        # URL:
+        # PUT /api/items/3
+        #
+        # ticket_id = 3
+        #
+        # Si encontramos:
+        #
+        # ticket["id"] == 3
+        #
+        # significa que hemos encontrado el ticket solicitado.    
+        if ticket["id"] == ticket_id:
+
+            # Guardamos ese ticket en una variable.
+            ticket_encontrado = ticket
+
+            # Ya no necesitamos seguir recorriendo la lista.
+            break
+
+    # Si después de recorrer todos los tickets seguimos teniendo None,
+    # significa que no existe ningún ticket con ese ID.
+    if ticket_encontrado is None:
+        return jsonify({
+            "error": "ticket no encontrado"
+        }), 404
+
+    
+    # -------------------------------------------------------------------
+    # COMPROBAR PROPIETARIO
+    # -------------------------------------------------------------------
+
+    # Aunque el ticket exista, todavía tenemos que comprobar
+    # que pertenezca al usuario que ha iniciado sesión.
+    #
+    # Ejemplo:
+    #
+    # ticket:
+    # owner = "carlos"
+    #
+    # sesión:
+    # username = "victor"
+    #
+    # Carlos != Victor
+    #
+    # Por tanto Victor NO puede modificar ese ticket.
+    if ticket_encontrado["owner"] != session["username"]:
+        return jsonify({
+            "error": "ticket no encontrado"
+        }), 404
+
+    # Devolvemos también 404 cuando el ticket pertenece a otro usuario.
+    #
+    # Así no revelamos si el ticket realmente existe o pertenece
+    # a otra persona.
+
+
+    # -------------------------------------------------------------------
+    # LEER LOS NUEVOS DATOS
+    # -------------------------------------------------------------------
+
+    # Leemos el JSON enviado por el cliente.
+    #
+    # Ejemplo:
+    #
+    # {
+    #     "title": "Problema VPN corporativa",
+    #     "text": "Sigue sin funcionar",
+    #     "category": "Red",
+    #     "priority": "Alta",
+    #     "status": "En progreso"
+    # }
+    #
+    datos = request.get_json(silent=True) or {}
+
+    # Extraer todos los campos recibidos.
+    title = datos.get("title")
+    text = datos.get("text")
+    category = datos.get("category")
+    priority = datos.get("priority")
+    status = datos.get("status")
+
+
+    # Para esta ruta PUT exigimos todos los campos.
+    #
+    # Si falta cualquiera de ellos, rechazamos la petición.
+    if not title or not text or not category or not priority or not status:
+        return jsonify({
+            "error": "datos no válidos"
+        }), 400
+
+    # -------------------------------------------------------------------
+    # VALIDAR CATEGORÍA
+    # -------------------------------------------------------------------
+    
+    # Categorías permitidas por NoVa.
+    categorias_permitidas = [
+        "Hardware",
+        "Software",
+        "Red",
+        "Acceso y cuentas",
+        "Otros"
+    ]
+
+    # Prioridades permitidas.
+    prioridades_permitidas = [
+        "Baja",
+        "Media",
+        "Alta",
+        "Crítica"
+    ]
+
+    # Estados permitidos
+    estados_permitidos = [
+        "Abierta",
+        "En progreso",
+        "Resuelta",
+        "Cerrada"
+    ]
+
+    # Comprobamos que la categoría enviada sea válida.
+    if category not in categorias_permitidas:
+        return jsonify({
+            "error": "categoría no válida"
+        }), 400
+    
+    # Comprobamos que la prioridad sea válida.
+    if priority not in prioridades_permitidas:
+        return jsonify({
+            "error": "prioridad no válida"
+        }), 400
+    
+    # Comprobamos que el estado sea uno de los permitidos.
+    if status not in estados_permitidos:
+        return jsonify({
+            "error": "estado no válido"
+        }), 400
+
+    # -------------------------------------------------------------------
+    # ACTUALIZAR EL TICKET
+    # -------------------------------------------------------------------
+
+    # Una vez realizadas todas las comprobaciones,
+    # modificamos los valores del ticket existente.
+    ticket_encontrado["title"] = title
+    ticket_encontrado["text"] = text
+    ticket_encontrado["category"] = category
+    ticket_encontrado["priority"] = priority
+    ticket_encontrado["status"] = status
+
+
+    # La fecha de creación NO cambia.
+    #
+    # Solo actualizamos la fecha de modificación para indicar
+    # cuándo se realizó el último cambio.
+    ticket_encontrado["updated_at"] = datetime.now(timezone.utc).isoformat()
+
+
+    # -------------------------------------------------------------------
+    # PREPARAR RESPUESTA
+    # -------------------------------------------------------------------
+    
+    # Construimos el JSON que devolveremos al cliente.
+    #
+    # Igual que al crear tickets, no devolvemos "owner"
+    # porque es información interna del servidor.
+    respuesta = {
+        "id": ticket_encontrado["id"],
+        "title": ticket_encontrado["title"],
+        "text": ticket_encontrado["text"],
+        "category": ticket_encontrado["category"],
+        "priority": ticket_encontrado["priority"],
+        "status": ticket_encontrado["status"],
+        "created_at": ticket_encontrado["created_at"],
+        "updated_at": ticket_encontrado["updated_at"]
+    }
+
+    # Devolvemos el ticket actualizado y código 200 OK.
+    return jsonify(respuesta), 200
