@@ -508,7 +508,7 @@ def update_item(ticket_id):
     # }
     #
     datos = request.get_json(silent=True) or {}
-
+    print("DATOS RECIBIDOS:", datos)
     # Extraer todos los campos recibidos.
     title = datos.get("title")
     text = datos.get("text")
@@ -613,3 +613,80 @@ def update_item(ticket_id):
 
     # Devolvemos el ticket actualizado y código 200 OK.
     return jsonify(respuesta), 200
+
+
+
+# -------------------------------------------------------------------
+# ELIMINAR TICKET
+# -------------------------------------------------------------------
+
+# Esta ruta permite eliminar un ticket existente.
+#
+# Ejemplo:
+#
+# DELETE /api/items/1
+#
+# El número final corresponde al ID del ticket que queremos borrar.
+@app.delete("/api/items/<int:ticket_id>")
+def delete_item(ticket_id):
+
+    # Solo un usuario autenticado puede eliminar tickets.
+    if "username" not in session:
+        return jsonify({
+            "error": "usuario no autenticado"
+        }), 401
+
+
+    # -------------------------------------------------------------------
+    # BUSCAR EL TICKET
+    # -------------------------------------------------------------------
+
+    # Inicialmente no hemos encontrado ningún ticket.
+    ticket_encontrado = None
+
+
+    # Recorremos la lista de tickets.
+    for ticket in tickets:
+
+        # Si encontramos el ID recibido en la URL,
+        # guardamos ese ticket.
+        if ticket["id"] == ticket_id:
+            ticket_encontrado = ticket
+            break
+
+
+    # Si no existe ningún ticket con ese ID,
+    # devolvemos 404.
+    if ticket_encontrado is None:
+        return jsonify({
+            "error": "ticket no encontrado"
+        }), 404
+
+
+    # -------------------------------------------------------------------
+    # COMPROBAR PROPIETARIO
+    # -------------------------------------------------------------------
+
+    # El ticket solo puede ser eliminado por su propietario.
+    #
+    # Si pertenece a otro usuario devolvemos también 404
+    # para no revelar que ese ticket existe.
+    if ticket_encontrado["owner"] != session["username"]:
+        return jsonify({
+            "error": "ticket no encontrado"
+        }), 404
+
+
+    # -------------------------------------------------------------------
+    # ELIMINAR TICKET
+    # -------------------------------------------------------------------
+
+    # Eliminamos el ticket de la lista.
+    tickets.remove(ticket_encontrado)
+
+
+    # Código 204 significa:
+    #
+    # La operación se ha realizado correctamente,
+    # pero no devolvemos contenido en la respuesta.
+    return "", 204
