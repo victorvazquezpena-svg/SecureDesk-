@@ -715,3 +715,296 @@ DELETE /api/items/{id}
 ```
 
 También queda pendiente comprobar el aislamiento completo entre usuarios, de forma que un usuario no pueda modificar ni eliminar tickets pertenecientes a otra cuenta.
+
+## Pruebas de modificación de tickets
+
+### PR-16 — Modificar un ticket correctamente
+
+**Objetivo:** comprobar que un usuario autenticado puede modificar uno de sus propios tickets.
+
+**Petición:**
+
+```powershell
+$ticketModificado = @{
+    title = "Problema con VPN corporativa"
+    text = "Sigue sin conectar despues de reiniciar"
+    category = "Red"
+    priority = "Alta"
+    status = "En progreso"
+} | ConvertTo-Json -Compress
+
+$bodyUtf8 = [System.Text.Encoding]::UTF8.GetBytes($ticketModificado)
+
+Invoke-RestMethod `
+    -Uri "http://127.0.0.1:8081/api/items/1" `
+    -Method PUT `
+    -ContentType "application/json; charset=utf-8" `
+    -Body $bodyUtf8 `
+    -WebSession $novaSession
+```
+
+**Resultado esperado:**
+
+- Código HTTP `200 OK`.
+- El ticket mantiene su mismo ID.
+- Los campos enviados se actualizan.
+- `updated_at` cambia respecto a `created_at`.
+
+**Resultado obtenido:** prueba superada.
+
+---
+
+### PR-17 — Modificar un ticket con un estado no permitido
+
+**Objetivo:** comprobar que la API rechaza estados que no están contemplados en la aplicación.
+
+Se envió:
+
+```text
+status = "Volando"
+```
+
+**Resultado esperado:**
+
+- Código HTTP `400 Bad Request`.
+- Mensaje:
+
+```json
+{
+    "error": "estado no válido"
+}
+```
+
+**Resultado obtenido:** prueba superada.
+
+---
+
+### PR-18 — Modificar un ticket sin iniciar sesión
+
+**Objetivo:** comprobar que un usuario no autenticado no puede modificar tickets.
+
+Se realizó una petición `PUT` sin enviar ninguna sesión.
+
+**Resultado esperado:**
+
+- Código HTTP `401 Unauthorized`.
+- Mensaje:
+
+```json
+{
+    "error": "usuario no autenticado"
+}
+```
+
+**Resultado obtenido:** prueba superada.
+
+---
+
+### PR-19 — Intentar modificar el ticket de otro usuario
+
+**Objetivo:** comprobar el aislamiento entre usuarios.
+
+Se creó el usuario `carlos` y se inició sesión con una sesión diferente a la de `victor`.
+
+Carlos intentó modificar el ticket `1`, cuyo propietario era Víctor.
+
+**Resultado esperado:**
+
+- Código HTTP `404 Not Found`.
+- Mensaje:
+
+```json
+{
+    "error": "ticket no encontrado"
+}
+```
+
+Se utiliza `404` para no revelar a otro usuario si el recurso existe realmente.
+
+Posteriormente se realizó un `GET /api/items` utilizando la sesión de Víctor y se comprobó que el ticket mantenía sus datos originales.
+
+**Resultado obtenido:** prueba superada.
+
+---
+
+## Pruebas de eliminación de tickets
+
+### PR-20 — Eliminar un ticket correctamente
+
+**Objetivo:** comprobar que el propietario de un ticket puede eliminarlo.
+
+**Petición:**
+
+```powershell
+Invoke-RestMethod `
+    -Uri "http://127.0.0.1:8081/api/items/1" `
+    -Method DELETE `
+    -WebSession $novaSession
+```
+
+**Resultado esperado:**
+
+- Código HTTP `204 No Content`.
+- La respuesta no contiene cuerpo.
+
+Después de la eliminación se ejecutó:
+
+```powershell
+Invoke-RestMethod `
+    -Uri "http://127.0.0.1:8081/api/items" `
+    -Method GET `
+    -WebSession $novaSession
+```
+
+La lista no mostró el ticket eliminado.
+
+**Resultado obtenido:** prueba superada.
+
+---
+
+### PR-21 — Eliminar un ticket sin iniciar sesión
+
+**Objetivo:** comprobar que un usuario no autenticado no puede eliminar tickets.
+
+**Petición:**
+
+```powershell
+Invoke-RestMethod `
+    -Uri "http://127.0.0.1:8081/api/items/999" `
+    -Method DELETE
+```
+
+**Resultado esperado:**
+
+- Código HTTP `401 Unauthorized`.
+- Mensaje:
+
+```json
+{
+    "error": "usuario no autenticado"
+}
+```
+
+**Resultado obtenido:** prueba superada.
+
+---
+
+### PR-22 — Eliminar un ticket inexistente
+
+**Objetivo:** comprobar el comportamiento de la API cuando se intenta borrar un ticket que no existe.
+
+**Petición:**
+
+```powershell
+Invoke-RestMethod `
+    -Uri "http://127.0.0.1:8081/api/items/999" `
+    -Method DELETE `
+    -WebSession $novaSession
+```
+
+**Resultado esperado:**
+
+- Código HTTP `404 Not Found`.
+- Mensaje:
+
+```json
+{
+    "error": "ticket no encontrado"
+}
+```
+
+**Resultado obtenido:** prueba superada.
+
+---
+
+### PR-23 — Intentar eliminar el ticket de otro usuario
+
+**Objetivo:** comprobar que un usuario no puede eliminar tickets pertenecientes a otra cuenta.
+
+Se creó un ticket perteneciente a Víctor:
+
+```text
+ID: 2
+Título: Problema de red
+Categoría: Red
+Prioridad: Alta
+Estado: Abierta
+```
+
+Después Carlos inició sesión e intentó eliminarlo:
+
+```powershell
+Invoke-RestMethod `
+    -Uri "http://127.0.0.1:8081/api/items/2" `
+    -Method DELETE `
+    -WebSession $carlosSession
+```
+
+**Resultado esperado:**
+
+- Código HTTP `404 Not Found`.
+- Mensaje:
+
+```json
+{
+    "error": "ticket no encontrado"
+}
+```
+
+Para comprobar que el intento no había afectado al ticket, Víctor volvió a consultar sus tickets:
+
+```powershell
+Invoke-RestMethod `
+    -Uri "http://127.0.0.1:8081/api/items" `
+    -Method GET `
+    -WebSession $novaSession
+```
+
+El ticket `2` seguía existiendo y mantenía sus datos originales.
+
+**Resultado obtenido:** prueba superada.
+
+---
+
+## Estado actual de las pruebas
+
+Actualmente se han probado manualmente las siguientes funcionalidades:
+
+- Comprobación de estado de la API.
+- Registro de usuarios.
+- Validación de registros incorrectos o duplicados.
+- Inicio de sesión.
+- Validación de credenciales incorrectas.
+- Listado de tickets.
+- Creación de tickets.
+- Validación de categoría y prioridad.
+- Modificación de tickets.
+- Validación de estados.
+- Eliminación de tickets.
+- Acceso sin autenticación.
+- Aislamiento entre usuarios.
+- Protección frente a modificación de tickets ajenos.
+- Protección frente a eliminación de tickets ajenos.
+
+El CRUD básico de tickets se encuentra funcional:
+
+```text
+GET    /api/items
+POST   /api/items
+PUT    /api/items/{id}
+DELETE /api/items/{id}
+```
+
+### Nota sobre las pruebas locales
+
+Durante estas pruebas se ha utilizado temporalmente el puerto `8081`.
+
+La aplicación definitiva se configurará para ejecutarse en el puerto `8080`, tal y como se establece para la entrega del proyecto.
+
+También se observó que, desde PowerShell, para algunas peticiones `PUT` fue necesario convertir explícitamente el JSON a UTF-8:
+
+```powershell
+$bodyUtf8 = [System.Text.Encoding]::UTF8.GetBytes($json)
+```
+
+Esto afecta al cliente utilizado para realizar las pruebas y no a la lógica de la API.
