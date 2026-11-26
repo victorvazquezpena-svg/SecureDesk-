@@ -1,0 +1,577 @@
+/* =========================================
+   1. VARIABLES Y RESET BASE (ESTILO NOVA OPS)
+   ========================================= */
+:root {
+  --fondo-base: #090d16;
+  --fondo-panel: #111827;
+  --fondo-elevado: #172033;
+  --fondo-campo: #0b1120;
+
+  --linea: #1e293b;
+  --linea-activa: #334155;
+
+  --texto-base: #f1f5f9;
+  --texto-apagado: #94a3b8;
+
+  --acento-principal: #a3e635;
+  --acento-principal-hover: #bef264;
+  --texto-sobre-acento: #090d16;
+
+  --acento-secundario: #22d3ee;
+  --peligro: #ef4444;
+  --peligro-hover: #dc2626;
+
+  /* Estados de incidencia */
+  --abierto-bg: rgba(34, 211, 238, 0.14);
+  --abierto-txt: #67e8f9;
+  --abierto-borde: rgba(34, 211, 238, 0.35);
+
+  --progreso-bg: rgba(250, 204, 21, 0.14);
+  --progreso-txt: #fde047;
+  --progreso-borde: rgba(250, 204, 21, 0.35);
+
+  --cerrado-bg: rgba(74, 222, 128, 0.14);
+  --cerrado-txt: #86efac;
+  --cerrado-borde: rgba(74, 222, 128, 0.35);
+
+  /* Prioridades */
+  --alta-bg: rgba(248, 113, 113, 0.16);
+  --alta-txt: #fca5a5;
+  --alta-borde: rgba(248, 113, 113, 0.4);
+
+  --media-bg: rgba(251, 146, 60, 0.15);
+  --media-txt: #fdba74;
+  --media-borde: rgba(251, 146, 60, 0.35);
+
+  --baja-bg: rgba(148, 163, 184, 0.14);
+  --baja-txt: #cbd5e1;
+  --baja-borde: rgba(148, 163, 184, 0.3);
+
+  /* Error */
+  --error-bg: rgba(239, 68, 68, 0.12);
+  --error-borde: rgba(248, 113, 113, 0.5);
+  --error-txt: #fca5a5;
+
+  --radio: 6px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+}
+
+body {
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: var(--fondo-base);
+  color: var(--texto-base);
+  line-height: 1.5;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.contenedor {
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding-inline: 1rem;
+}
+
+.contenido-principal {
+  padding-block: 1.75rem 3rem;
+}
+
+.oculto {
+  display: none !important;
+}
+
+/* =========================================
+   2. BARRA SUPERIOR (CABECERA DE APP)
+   ========================================= */
+.barra-superior {
+  background-color: var(--fondo-panel);
+  border-bottom: 1px solid var(--linea);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.contenido-barra {
+  min-height: 62px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding-block: 0.5rem;
+}
+
+.marca-app {
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--acento-principal);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.marca-app::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--acento-principal);
+  box-shadow: 0 0 10px var(--acento-principal);
+}
+
+.zona-usuario {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.usuario-conectado {
+  font-size: 0.86rem;
+  color: var(--texto-apagado);
+  background-color: var(--fondo-campo);
+  border: 1px solid var(--linea);
+  padding: 0.3rem 0.65rem;
+  border-radius: var(--radio);
+}
+
+.usuario-conectado strong {
+  color: var(--texto-base);
+}
+
+/* =========================================
+   3. PANTALLAS DE ACCESO (LOGIN / REGISTRO)
+   ========================================= */
+.contenedor-acceso {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.tarjeta-acceso {
+  width: 100%;
+  max-width: 410px;
+  background-color: var(--fondo-panel);
+  border: 1px solid var(--linea);
+  border-top: 3px solid var(--acento-principal);
+  border-radius: var(--radio);
+  padding: 2rem 1.5rem;
+}
+
+.cabecera-acceso {
+  margin-bottom: 1.5rem;
+}
+
+.cabecera-acceso h1 {
+  font-size: 1.65rem;
+  font-weight: 800;
+  color: var(--texto-base);
+  letter-spacing: -0.02em;
+  margin-bottom: 0.3rem;
+}
+
+.cabecera-acceso p {
+  font-size: 0.9rem;
+  color: var(--texto-apagado);
+}
+
+.pie-acceso {
+  margin-top: 1.35rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--linea);
+  text-align: center;
+  font-size: 0.88rem;
+  color: var(--texto-apagado);
+}
+
+.pie-acceso a {
+  color: var(--acento-secundario);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.pie-acceso a:hover {
+  text-decoration: underline;
+}
+
+/* =========================================
+   4. FORMULARIOS Y CAMPOS
+   ========================================= */
+.tarjeta-formulario {
+  width: 100%;
+  max-width: 780px;
+  margin: 0 auto;
+  background-color: var(--fondo-panel);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio);
+  padding: 1.75rem 1.5rem;
+}
+
+.cabecera-formulario {
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid var(--linea);
+}
+
+.cabecera-formulario h1 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin-bottom: 0.2rem;
+}
+
+.cabecera-formulario p {
+  font-size: 0.88rem;
+  color: var(--texto-apagado);
+}
+
+.grupo-campo {
+  margin-bottom: 1.15rem;
+  min-width: 0;
+}
+
+.grupo-campo label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--texto-base);
+  margin-bottom: 0.4rem;
+}
+
+.campo-entrada {
+  width: 100%;
+  padding: 0.65rem 0.8rem;
+  font-size: 0.94rem;
+  font-family: inherit;
+  color: var(--texto-base);
+  background-color: var(--fondo-campo);
+  border: 1px solid var(--linea-activa);
+  border-radius: var(--radio);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.campo-entrada::placeholder {
+  color: #64748b;
+}
+
+.campo-entrada:focus {
+  outline: none;
+  border-color: var(--acento-principal);
+  box-shadow: 0 0 0 3px rgba(163, 230, 53, 0.16);
+}
+
+textarea.campo-entrada {
+  resize: vertical;
+  min-height: 115px;
+}
+
+.fila-campos {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.acciones-formulario {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+  padding-top: 1.1rem;
+  border-top: 1px solid var(--linea);
+}
+
+/* =========================================
+   5. BOTONES Y MENSAJES DE ERROR
+   ========================================= */
+.boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.62rem 1.1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  font-family: inherit;
+  line-height: 1.2;
+  text-decoration: none;
+  border: 1px solid transparent;
+  border-radius: var(--radio);
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  white-space: nowrap;
+}
+
+.boton-completo {
+  width: 100%;
+}
+
+.boton-pequeno {
+  padding: 0.4rem 0.75rem;
+  font-size: 0.82rem;
+}
+
+.boton-primario {
+  background-color: var(--acento-principal);
+  color: var(--texto-sobre-acento);
+}
+
+.boton-primario:hover {
+  background-color: var(--acento-principal-hover);
+}
+
+.boton-secundario {
+  background-color: var(--fondo-elevado);
+  color: var(--texto-base);
+  border-color: var(--linea-activa);
+}
+
+.boton-secundario:hover {
+  background-color: #222f47;
+  border-color: #475569;
+}
+
+.boton-peligro {
+  background-color: rgba(239, 68, 68, 0.14);
+  color: #fca5a5;
+  border-color: rgba(248, 113, 113, 0.35);
+}
+
+.boton-peligro:hover {
+  background-color: var(--peligro);
+  color: #ffffff;
+  border-color: var(--peligro);
+}
+
+.caja-error {
+  background-color: var(--error-bg);
+  border: 1px solid var(--error-borde);
+  color: var(--error-txt);
+  padding: 0.72rem 0.9rem;
+  border-radius: var(--radio);
+  font-size: 0.86rem;
+  margin-bottom: 1.1rem;
+}
+
+/* =========================================
+   6. LISTADO DE INCIDENCIAS Y ETIQUETAS
+   ========================================= */
+.cabecera-seccion {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.cabecera-seccion h1 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.lista-incidencias {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.tarjeta-incidencia {
+  background-color: var(--fondo-panel);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio);
+  padding: 1.1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.tarjeta-incidencia:hover {
+  border-color: var(--linea-activa);
+  background-color: var(--fondo-elevado);
+}
+
+.datos-incidencia {
+  min-width: 0;
+  flex: 1;
+}
+
+.titulo-incidencia {
+  font-size: 1.02rem;
+  font-weight: 600;
+  color: var(--texto-base);
+  margin-bottom: 0.6rem;
+  overflow-wrap: anywhere;
+}
+
+.etiquetas-incidencia {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.etiqueta {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.22rem 0.6rem;
+  border-radius: var(--radio);
+  border: 1px solid transparent;
+  font-size: 0.76rem;
+  font-weight: 600;
+  max-width: 100%;
+}
+
+/* Estados */
+.estado-abierto {
+  background-color: var(--abierto-bg);
+  color: var(--abierto-txt);
+  border-color: var(--abierto-borde);
+}
+
+.estado-en-progreso {
+  background-color: var(--progreso-bg);
+  color: var(--progreso-txt);
+  border-color: var(--progreso-borde);
+}
+
+.estado-cerrado {
+  background-color: var(--cerrado-bg);
+  color: var(--cerrado-txt);
+  border-color: var(--cerrado-borde);
+}
+
+/* Prioridades */
+.prioridad-alta {
+  background-color: var(--alta-bg);
+  color: var(--alta-txt);
+  border-color: var(--alta-borde);
+}
+
+.prioridad-media {
+  background-color: var(--media-bg);
+  color: var(--media-txt);
+  border-color: var(--media-borde);
+}
+
+.prioridad-baja {
+  background-color: var(--baja-bg);
+  color: var(--baja-txt);
+  border-color: var(--baja-borde);
+}
+
+/* Categoría */
+.categoria-incidencia {
+  background-color: var(--fondo-campo);
+  color: var(--texto-apagado);
+  border-color: var(--linea-activa);
+}
+
+.acciones-incidencia {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+/* =========================================
+   7. RESPONSIVE (TABLET Y MÓVIL HASTA 360px)
+   ========================================= */
+@media (max-width: 768px) {
+  .fila-campos {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .tarjeta-incidencia {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .acciones-incidencia {
+    justify-content: flex-end;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--linea);
+  }
+}
+
+@media (max-width: 480px) {
+  .contenido-barra {
+    flex-direction: column;
+    align-items: flex-start;
+    padding-block: 0.65rem;
+  }
+
+  .zona-usuario {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .cabecera-seccion {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .cabecera-seccion h1 {
+    font-size: 1.35rem;
+  }
+
+  .tarjeta-acceso,
+  .tarjeta-formulario {
+    padding: 1.25rem 1rem;
+  }
+
+  .acciones-formulario {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+
+  .acciones-formulario .boton {
+    width: 100%;
+  }
+}
+
+@media (max-width: 360px) {
+  .contenedor {
+    padding-inline: 0.75rem;
+  }
+
+  .tarjeta-incidencia {
+    padding: 0.9rem;
+  }
+
+  .titulo-incidencia {
+    font-size: 0.98rem;
+  }
+
+  .etiqueta {
+    font-size: 0.74rem;
+    padding: 0.2rem 0.52rem;
+  }
+
+  .acciones-incidencia {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .acciones-incidencia .boton {
+    width: 100%;
+  }
+}

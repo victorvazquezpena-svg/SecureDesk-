@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crear / Editar incidencia - NoVa</title>
+  <link rel="stylesheet" href="./css/estilos.css">
+</head>
+<body>
+
+  <!-- Barra superior de la aplicación -->
+  <header class="barra-superior">
+    <div class="contenedor contenido-barra">
+      <a href="tickets.html" class="marca-app">NoVa</a>
+      <div class="zona-usuario">
+        <span class="usuario-conectado">Usuario: <strong> usuario</strong></span>
+        <a href="login.html" class="boton boton-secundario boton-pequeno">Cerrar sesión</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="contenedor contenido-principal">
+    <section class="tarjeta-formulario">
+      <header class="cabecera-formulario">
+        <h1>Crear / Editar incidencia</h1>
+        <p>Completa los detalles del ticket y guarda los cambios.</p>
+      </header>
+
+      <!-- De momento redirige a tickets.html para probar la navegación -->
+      <form action="tickets.html" method="post">
+        <div class="grupo-campo">
+          <label for="titulo">Título</label>
+          <input
+            type="text"
+            id="titulo"
+            name="titulo"
+            class="campo-entrada"
+            placeholder="Ej. Error al cargar los datos de usuario"
+            required
+          >
+        </div>
+
+        <div class="grupo-campo">
+          <label for="descripcion">Descripción</label>
+          <textarea
+            id="descripcion"
+            name="descripcion"
+            class="campo-entrada"
+            rows="5"
+            placeholder="Describe detalladamente la incidencia o tarea..."
+            required
+          ></textarea>
+        </div>
+
+        <div class="fila-campos">
+          <div class="grupo-campo">
+            <label for="categoria">Categoría</label>
+            <select id="categoria" name="categoria" class="campo-entrada" required>
+              <option value="">Selecciona una categoría</option>
+              <option value="interfaz">Interfaz</option>
+              <option value="backend">Backend</option>
+              <option value="base-datos">Base de datos</option>
+              <option value="seguridad">Seguridad</option>
+              <option value="otro">Otro</option>
+            </select>
+          </div>
+
+          <div class="grupo-campo">
+            <label for="prioridad">Prioridad</label>
+            <select id="prioridad" name="prioridad" class="campo-entrada" required>
+              <option value="baja">Baja</option>
+              <option value="media" selected>Media</option>
+              <option value="alta">Alta</option>
+            </select>
+          </div>
+
+          <div class="grupo-campo">
+            <label for="estado">Estado</label>
+            <select id="estado" name="estado" class="campo-entrada" required>
+              <option value="abierto" selected>Abierto</option>
+              <option value="en-progreso">En progreso</option>
+              <option value="cerrado">Cerrado</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="acciones-formulario">
+          <button type="submit" class="boton boton-primario">Guardar</button>
+          <a href="tickets.html" class="boton boton-secundario">Cancelar</a>
+        </div>
+      </form>
+    </section>
+  </main>
+
+</body>
+</html>
