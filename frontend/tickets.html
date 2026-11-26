@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Listado de incidencias - NoVa</title>
+  <link rel="stylesheet" href="./css/estilos.css">
+</head>
+<body>
+
+  <!-- Barra superior de la aplicación -->
+  <header class="barra-superior">
+    <div class="contenedor contenido-barra">
+      <a href="tickets.html" class="marca-app">NoVa</a>
+      <div class="zona-usuario">
+        <span class="usuario-conectado">Usuario: <strong>usuario</strong></span>
+        <a href="login.html" class="boton boton-secundario boton-pequeno">Cerrar sesión</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="contenedor contenido-principal">
+    <!-- Cabecera de sección y botón para crear incidencia -->
+    <div class="cabecera-seccion">
+      <h1>Incidencias</h1>
+      <a href="ticket-formulario.html" class="boton boton-primario">+ Crear incidencia</a>
+    </div>
+
+    <!-- Listado de tickets con datos ficticios -->
+    <section class="lista-incidencias" aria-label="Listado de incidencias">
+
+      <!-- Incidencia 1 -->
+      <article class="tarjeta-incidencia">
+        <div class="datos-incidencia">
+          <h2 class="titulo-incidencia">Error al exportar el listado de usuarios a CSV</h2>
+          <div class="etiquetas-incidencia">
+            <span class="etiqueta estado-abierto">Estado: Abierto</span>
+            <span class="etiqueta prioridad-alta">Prioridad: Alta</span>
+            <span class="etiqueta categoria-incidencia">Categoría: Backend</span>
+          </div>
+        </div>
+        <div class="acciones-incidencia">
+          <a href="ticket-formulario.html?id=1" class="boton boton-secundario boton-pequeno">Editar</a>
+          <button type="button" class="boton boton-peligro boton-pequeno">Eliminar</button>
+        </div>
+      </article>
+
+      <!-- Incidencia 2 -->
+      <article class="tarjeta-incidencia">
+        <div class="datos-incidencia">
+          <h2 class="titulo-incidencia">Revisar permisos de lectura en carpetas compartidas</h2>
+          <div class="etiquetas-incidencia">
+            <span class="etiqueta estado-en-progreso">Estado: En progreso</span>
+            <span class="etiqueta prioridad-media">Prioridad: Media</span>
+            <span class="etiqueta categoria-incidencia">Categoría: Seguridad</span>
+          </div>
+        </div>
+        <div class="acciones-incidencia">
+          <a href="ticket-formulario.html?id=2" class="boton boton-secundario boton-pequeno">Editar</a>
+          <button type="button" class="boton boton-peligro boton-pequeno">Eliminar</button>
+        </div>
+      </article>
+
+      <!-- Incidencia 3 -->
+      <article class="tarjeta-incidencia">
+        <div class="datos-incidencia">
+          <h2 class="titulo-incidencia">Corregir alineación del menú en pantallas pequeñas</h2>
+          <div class="etiquetas-incidencia">
+            <span class="etiqueta estado-cerrado">Estado: Cerrado</span>
+            <span class="etiqueta prioridad-baja">Prioridad: Baja</span>
+            <span class="etiqueta categoria-incidencia">Categoría: Interfaz</span>
+          </div>
+        </div>
+        <div class="acciones-incidencia">
+          <a href="ticket-formulario.html?id=3" class="boton boton-secundario boton-pequeno">Editar</a>
+          <button type="button" class="boton boton-peligro boton-pequeno">Eliminar</button>
+        </div>
+      </article>
+
+    </section>
+  </main>
+
+</body>
+</html>
