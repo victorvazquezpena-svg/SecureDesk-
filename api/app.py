@@ -690,3 +690,27 @@ def delete_item(ticket_id):
     # La operación se ha realizado correctamente,
     # pero no devolvemos contenido en la respuesta.
     return "", 204
+
+
+# -------------------------------------------------------------------
+# LOGOUT
+# -------------------------------------------------------------------
+
+# Esta ruta permite cerrar la sesión del usuario.
+#
+# POST /api/logout
+#
+@app.post("/api/logout")
+def logout():
+
+    # Eliminamos "username" de la sesión.
+    #
+    # session.pop() devuelve y elimina el valor.
+    #
+    # El segundo parámetro (None) evita que se produzca
+    # un error si no había ningún usuario conectado.
+    session.pop("username", None)
+
+    # 204 significa que la operación se ha realizado
+    # correctamente pero no devolvemos contenido.
+    return "", 204

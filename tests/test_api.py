@@ -1226,4 +1226,64 @@ def test_get_items_aislamiento_usuarios():
         assert datos == []
 
 
-    
+
+
+# -------------------------------------------------------------------
+# TEST 24 - CERRAR SESIÓN CORRECTAMENTE
+# -------------------------------------------------------------------
+
+def test_logout_correcto():
+
+    app.config["TESTING"] = True
+
+    with app.test_client() as client:
+
+        # Primero registramos al usuario.
+        respuesta_registro = client.post(
+            "/api/register",
+            json={
+                "username": "victor",
+                "password": "Clave-1234"
+            }
+        )
+
+        assert respuesta_registro.status_code == 201
+
+
+        # Iniciamos sesión.
+        respuesta_login = client.post(
+            "/api/login",
+            json={
+                "username": "victor",
+                "password": "Clave-1234"
+            }
+        )
+
+        assert respuesta_login.status_code == 200
+
+
+        # Comprobamos que con sesión podemos
+        # consultar nuestros tickets.
+        respuesta_antes = client.get("/api/items")
+
+        assert respuesta_antes.status_code == 200
+
+
+        # Cerramos la sesión.
+        respuesta_logout = client.post("/api/logout")
+
+        assert respuesta_logout.status_code == 204
+
+
+        # Después del logout volvemos a intentar
+        # consultar los tickets.
+        respuesta_despues = client.get("/api/items")
+
+
+        # Ya no tenemos sesión, por lo que la API
+        # debe responder 401 Unauthorized.
+        assert respuesta_despues.status_code == 401
+
+        datos = respuesta_despues.get_json()
+
+        assert datos["error"] == "usuario no autenticado"
