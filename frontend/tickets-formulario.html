@@ -3,33 +3,80 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Crear / Editar incidencia - NoVa</title>
+
   <link rel="stylesheet" href="./css/estilos.css">
 </head>
+
 <body>
 
-  <!-- Barra superior de la aplicación -->
+  <!-- Barra superior -->
   <header class="barra-superior">
     <div class="contenedor contenido-barra">
-      <a href="tickets.html" class="marca-app">NoVa</a>
+
+      <a href="tickets.html" class="marca-app">
+        NoVa
+      </a>
+
       <div class="zona-usuario">
-        <span class="usuario-conectado">Usuario: <strong> usuario</strong></span>
-        <a href="login.html" class="boton boton-secundario boton-pequeno">Cerrar sesión</a>
+
+        <span class="usuario-conectado">
+          Usuario conectado
+        </span>
+
+        <!--
+          El cierre de sesión será gestionado desde app.js
+          mediante POST /api/logout.
+        -->
+        <button
+          type="button"
+          id="boton-logout"
+          class="boton boton-secundario boton-pequeno">
+          Cerrar sesión
+        </button>
+
       </div>
     </div>
   </header>
 
+
   <main class="contenedor contenido-principal">
+
     <section class="tarjeta-formulario">
+
       <header class="cabecera-formulario">
         <h1>Crear / Editar incidencia</h1>
         <p>Completa los detalles del ticket y guarda los cambios.</p>
       </header>
 
-      <!-- De momento redirige a tickets.html para probar la navegación -->
-      <form action="tickets.html" method="post">
+
+      <!-- Mensaje mostrado por JavaScript si ocurre algún error -->
+      <div
+        id="mensaje-error"
+        class="caja-error oculto"
+        role="alert">
+        No se ha podido guardar la incidencia.
+      </div>
+
+
+      <!--
+        El formulario será gestionado por JavaScript.
+
+        Sin id en la URL:
+        POST /api/items
+
+        Con ?id=3:
+        PUT /api/items/3
+      -->
+      <form id="form-ticket">
+
         <div class="grupo-campo">
-          <label for="titulo">Título</label>
+
+          <label for="titulo">
+            Título
+          </label>
+
           <input
             type="text"
             id="titulo"
@@ -38,10 +85,16 @@
             placeholder="Ej. Error al cargar los datos de usuario"
             required
           >
+
         </div>
 
+
         <div class="grupo-campo">
-          <label for="descripcion">Descripción</label>
+
+          <label for="descripcion">
+            Descripción
+          </label>
+
           <textarea
             id="descripcion"
             name="descripcion"
@@ -50,47 +103,149 @@
             placeholder="Describe detalladamente la incidencia o tarea..."
             required
           ></textarea>
+
         </div>
+
 
         <div class="fila-campos">
+
+          <!-- Categorías aceptadas por nuestro backend -->
           <div class="grupo-campo">
-            <label for="categoria">Categoría</label>
-            <select id="categoria" name="categoria" class="campo-entrada" required>
-              <option value="">Selecciona una categoría</option>
-              <option value="interfaz">Interfaz</option>
-              <option value="backend">Backend</option>
-              <option value="base-datos">Base de datos</option>
-              <option value="seguridad">Seguridad</option>
-              <option value="otro">Otro</option>
+
+            <label for="categoria">
+              Categoría
+            </label>
+
+            <select
+              id="categoria"
+              name="categoria"
+              class="campo-entrada"
+              required>
+
+              <option value="">
+                Selecciona una categoría
+              </option>
+
+              <option value="Hardware">
+                Hardware
+              </option>
+
+              <option value="Software">
+                Software
+              </option>
+
+              <option value="Red">
+                Red
+              </option>
+
+              <option value="Acceso y cuentas">
+                Acceso y cuentas
+              </option>
+
+              <option value="Otros">
+                Otros
+              </option>
+
             </select>
+
           </div>
 
+
+          <!-- Prioridades aceptadas por nuestro backend -->
           <div class="grupo-campo">
-            <label for="prioridad">Prioridad</label>
-            <select id="prioridad" name="prioridad" class="campo-entrada" required>
-              <option value="baja">Baja</option>
-              <option value="media" selected>Media</option>
-              <option value="alta">Alta</option>
+
+            <label for="prioridad">
+              Prioridad
+            </label>
+
+            <select
+              id="prioridad"
+              name="prioridad"
+              class="campo-entrada"
+              required>
+
+              <option value="Baja">
+                Baja
+              </option>
+
+              <option value="Media" selected>
+                Media
+              </option>
+
+              <option value="Alta">
+                Alta
+              </option>
+
+              <option value="Crítica">
+                Crítica
+              </option>
+
             </select>
+
           </div>
 
+
+          <!-- Estados aceptados por nuestro backend -->
           <div class="grupo-campo">
-            <label for="estado">Estado</label>
-            <select id="estado" name="estado" class="campo-entrada" required>
-              <option value="abierto" selected>Abierto</option>
-              <option value="en-progreso">En progreso</option>
-              <option value="cerrado">Cerrado</option>
+
+            <label for="estado">
+              Estado
+            </label>
+
+            <select
+              id="estado"
+              name="estado"
+              class="campo-entrada"
+              required>
+
+              <option value="Abierta" selected>
+                Abierta
+              </option>
+
+              <option value="En progreso">
+                En progreso
+              </option>
+
+              <option value="Resuelta">
+                Resuelta
+              </option>
+
+              <option value="Cerrada">
+                Cerrada
+              </option>
+
             </select>
+
           </div>
+
         </div>
+
 
         <div class="acciones-formulario">
-          <button type="submit" class="boton boton-primario">Guardar</button>
-          <a href="tickets.html" class="boton boton-secundario">Cancelar</a>
+
+          <button
+            type="submit"
+            class="boton boton-primario">
+            Guardar
+          </button>
+
+          <a
+            href="tickets.html"
+            class="boton boton-secundario">
+            Cancelar
+          </a>
+
         </div>
+
       </form>
+
     </section>
+
   </main>
+
+
+  <!-- JavaScript común de la aplicación -->
+  <script src="./js/app.js"></script>
 
 </body>
 </html>

@@ -3,27 +3,46 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Iniciar sesión - NoVa</title>
+
   <link rel="stylesheet" href="./css/estilos.css">
 </head>
+
 <body>
 
   <main class="contenedor-acceso">
+
     <section class="tarjeta-acceso">
+
       <header class="cabecera-acceso">
         <h1>NoVa</h1>
         <p>Inicia sesión para gestionar tus incidencias</p>
       </header>
 
-      <!-- Zona para mostrar mensajes de error -->
-      <div id="mensaje-error" class="caja-error oculto" role="alert">
+      <!--
+        Este mensaje permanece oculto inicialmente.
+        JavaScript lo mostrará si el login falla.
+      -->
+      <div
+        id="mensaje-error"
+        class="caja-error oculto"
+        role="alert">
         Nombre de usuario o contraseña incorrectos.
       </div>
 
-      <!-- De momento redirige a tickets.html para probar el flujo visual -->
-      <form action="tickets.html" method="get">
+      <!--
+        El formulario ya no redirige directamente a tickets.html.
+        El envío será controlado desde app.js para llamar a la API.
+      -->
+      <form id="form-login">
+
         <div class="grupo-campo">
-          <label for="usuario">Nombre de usuario</label>
+
+          <label for="usuario">
+            Nombre de usuario
+          </label>
+
           <input
             type="text"
             id="usuario"
@@ -32,10 +51,15 @@
             placeholder="Introduce tu usuario"
             required
           >
+
         </div>
 
         <div class="grupo-campo">
-          <label for="contrasena">Contraseña</label>
+
+          <label for="contrasena">
+            Contraseña
+          </label>
+
           <input
             type="password"
             id="contrasena"
@@ -44,18 +68,32 @@
             placeholder="Introduce tu contraseña"
             required
           >
+
         </div>
 
-        <button type="submit" class="boton boton-primario boton-completo">
+        <button
+          type="submit"
+          class="boton boton-primario boton-completo">
           Iniciar sesión
         </button>
+
       </form>
 
       <footer class="pie-acceso">
-        <p>¿No tienes cuenta? <a href="registro.html">Ir a registro</a></p>
+
+        <p>
+          ¿No tienes cuenta?
+          <a href="registro.html">Ir a registro</a>
+        </p>
+
       </footer>
+
     </section>
+
   </main>
+
+  <!-- JavaScript común de la aplicación -->
+  <script src="./js/app.js"></script>
 
 </body>
 </html>

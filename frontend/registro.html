@@ -3,27 +3,46 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Registro de usuario - NoVa</title>
+
   <link rel="stylesheet" href="./css/estilos.css">
 </head>
+
 <body>
 
   <main class="contenedor-acceso">
+
     <section class="tarjeta-acceso">
+
       <header class="cabecera-acceso">
         <h1>NoVa</h1>
         <p>Crea una cuenta nueva para acceder a la aplicación</p>
       </header>
 
-      <!-- Zona para mostrar mensajes de error (oculta por defecto) -->
-      <div id="mensaje-error" class="caja-error oculto" role="alert">
+      <!--
+        Mensaje oculto inicialmente.
+        JavaScript lo mostrará si el registro falla.
+      -->
+      <div
+        id="mensaje-error"
+        class="caja-error oculto"
+        role="alert">
         El nombre de usuario ya existe o los datos no son válidos.
       </div>
 
-      <!-- De momento redirige a login.html para probar la navegación -->
-      <form action="login.html" method="get">
+      <!--
+        El registro será gestionado desde app.js.
+        Desde JavaScript llamaremos a POST /api/register.
+      -->
+      <form id="form-registro">
+
         <div class="grupo-campo">
-          <label for="usuario">Nombre de usuario</label>
+
+          <label for="usuario">
+            Nombre de usuario
+          </label>
+
           <input
             type="text"
             id="usuario"
@@ -32,10 +51,15 @@
             placeholder="Elige un nombre de usuario"
             required
           >
+
         </div>
 
         <div class="grupo-campo">
-          <label for="contrasena">Contraseña</label>
+
+          <label for="contrasena">
+            Contraseña
+          </label>
+
           <input
             type="password"
             id="contrasena"
@@ -44,18 +68,32 @@
             placeholder="Crea una contraseña"
             required
           >
+
         </div>
 
-        <button type="submit" class="boton boton-primario boton-completo">
+        <button
+          type="submit"
+          class="boton boton-primario boton-completo">
           Registrarse
         </button>
+
       </form>
 
       <footer class="pie-acceso">
-        <p>¿Ya tienes cuenta? <a href="login.html">Volver al login</a></p>
+
+        <p>
+          ¿Ya tienes cuenta?
+          <a href="login.html">Volver al login</a>
+        </p>
+
       </footer>
+
     </section>
+
   </main>
+
+  <!-- JavaScript común de la aplicación -->
+  <script src="./js/app.js"></script>
 
 </body>
 </html>
