@@ -12,7 +12,11 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timezone
 
 # Creamos la aplicación con Flask
-app = Flask(__name__)
+app = Flask(
+    __name__,
+    static_folder="../frontend",
+    static_url_path=""
+)
 
 
 # Flask necesita una clave para firmar las cookies de sesión.
@@ -65,6 +69,14 @@ tickets = []
 
 siguiente_ticket_id = 1
 
+
+
+# Ruta principal de la aplicación.
+# Al entrar en http://127.0.0.1:8080/
+# Flask mostrará directamente el login.
+@app.get("/")
+def inicio():
+    return app.send_static_file("login.html")
 
 # -------------------------------------------------------------------
 # HEALTH CHECK
@@ -508,7 +520,7 @@ def update_item(ticket_id):
     # }
     #
     datos = request.get_json(silent=True) or {}
-    print("DATOS RECIBIDOS:", datos)
+    
     # Extraer todos los campos recibidos.
     title = datos.get("title")
     text = datos.get("text")
@@ -714,3 +726,11 @@ def logout():
     # 204 significa que la operación se ha realizado
     # correctamente pero no devolvemos contenido.
     return "", 204
+
+# Arranque de la aplicación
+if __name__ == "__main__":
+    app.run(
+        host="127.0.0.1",
+        port=8080,
+        debug=False
+    )

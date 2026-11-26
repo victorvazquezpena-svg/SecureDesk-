@@ -1,35 +1,139 @@
+```html
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Crear / Editar incidencia - NoVa</title>
+
   <link rel="stylesheet" href="./css/estilos.css">
 </head>
+
+
 <body>
 
-  <!-- Barra superior de la aplicación -->
+  <!-- =====================================================
+       BARRA SUPERIOR DE LA APLICACIÓN
+       ===================================================== -->
   <header class="barra-superior">
+
     <div class="contenedor contenido-barra">
-      <a href="tickets.html" class="marca-app">NoVa</a>
+
+      <!-- Logo / enlace al listado de tickets -->
+      <a href="tickets.html" class="marca-app">
+        NoVa
+      </a>
+
+
+      <!-- Zona de usuario -->
       <div class="zona-usuario">
-        <span class="usuario-conectado">Usuario: <strong> usuario</strong></span>
-        <a href="login.html" class="boton boton-secundario boton-pequeno">Cerrar sesión</a>
+
+        <span class="usuario-conectado">
+          Usuario conectado
+        </span>
+
+
+        <!--
+          Este botón será controlado por app.js.
+
+          Al pulsarlo JavaScript hará:
+
+          POST /api/logout
+        -->
+        <button
+          type="button"
+          id="boton-logout"
+          class="boton boton-secundario boton-pequeno">
+
+          Cerrar sesión
+
+        </button>
+
       </div>
+
     </div>
+
   </header>
 
+
+
+  <!-- =====================================================
+       CONTENIDO PRINCIPAL
+       ===================================================== -->
   <main class="contenedor contenido-principal">
+
     <section class="tarjeta-formulario">
+
+
+      <!-- Cabecera del formulario -->
       <header class="cabecera-formulario">
+
         <h1>Crear / Editar incidencia</h1>
-        <p>Completa los detalles del ticket y guarda los cambios.</p>
+
+        <p>
+          Completa los detalles del ticket y guarda los cambios.
+        </p>
+
       </header>
 
-      <!-- De momento redirige a tickets.html para probar la navegación -->
-      <form action="tickets.html" method="post">
+
+
+      <!-- =================================================
+           MENSAJE DE ERROR
+           =================================================
+
+           Este mensaje está oculto inicialmente.
+
+           JavaScript eliminará la clase "oculto"
+           si Flask devuelve algún error.
+      -->
+      <div
+        id="mensaje-error"
+        class="caja-error oculto"
+        role="alert">
+
+        No se ha podido guardar la incidencia.
+
+      </div>
+
+
+
+      <!-- =================================================
+           FORMULARIO DE TICKET
+           =================================================
+
+           IMPORTANTE:
+
+           No usamos:
+
+           action="tickets.html"
+           method="post"
+
+           porque el formulario será controlado por JavaScript.
+
+           app.js será quien haga la petición a la API.
+
+           CREAR:
+           POST /api/items
+
+           EDITAR:
+           PUT /api/items/<id>
+      -->
+      <form id="form-ticket">
+
+
+        <!-- =================================================
+             TÍTULO
+             ================================================= -->
         <div class="grupo-campo">
-          <label for="titulo">Título</label>
+
+          <label for="titulo">
+            Título
+          </label>
+
           <input
             type="text"
             id="titulo"
@@ -38,10 +142,20 @@
             placeholder="Ej. Error al cargar los datos de usuario"
             required
           >
+
         </div>
 
+
+
+        <!-- =================================================
+             DESCRIPCIÓN
+             ================================================= -->
         <div class="grupo-campo">
-          <label for="descripcion">Descripción</label>
+
+          <label for="descripcion">
+            Descripción
+          </label>
+
           <textarea
             id="descripcion"
             name="descripcion"
@@ -50,47 +164,206 @@
             placeholder="Describe detalladamente la incidencia o tarea..."
             required
           ></textarea>
+
         </div>
 
+
+
+        <!-- =================================================
+             CATEGORÍA / PRIORIDAD / ESTADO
+             ================================================= -->
         <div class="fila-campos">
+
+
+          <!-- CATEGORÍA -->
           <div class="grupo-campo">
-            <label for="categoria">Categoría</label>
-            <select id="categoria" name="categoria" class="campo-entrada" required>
-              <option value="">Selecciona una categoría</option>
-              <option value="interfaz">Interfaz</option>
-              <option value="backend">Backend</option>
-              <option value="base-datos">Base de datos</option>
-              <option value="seguridad">Seguridad</option>
-              <option value="otro">Otro</option>
+
+            <label for="categoria">
+              Categoría
+            </label>
+
+            <!--
+              Estos valores coinciden exactamente
+              con los aceptados por nuestro backend.
+            -->
+            <select
+              id="categoria"
+              name="categoria"
+              class="campo-entrada"
+              required>
+
+              <option value="">
+                Selecciona una categoría
+              </option>
+
+              <option value="Hardware">
+                Hardware
+              </option>
+
+              <option value="Software">
+                Software
+              </option>
+
+              <option value="Red">
+                Red
+              </option>
+
+              <option value="Acceso y cuentas">
+                Acceso y cuentas
+              </option>
+
+              <option value="Otros">
+                Otros
+              </option>
+
             </select>
+
           </div>
 
+
+
+          <!-- PRIORIDAD -->
           <div class="grupo-campo">
-            <label for="prioridad">Prioridad</label>
-            <select id="prioridad" name="prioridad" class="campo-entrada" required>
-              <option value="baja">Baja</option>
-              <option value="media" selected>Media</option>
-              <option value="alta">Alta</option>
+
+            <label for="prioridad">
+              Prioridad
+            </label>
+
+            <!--
+              Valores aceptados por Flask:
+
+              Baja
+              Media
+              Alta
+              Crítica
+            -->
+            <select
+              id="prioridad"
+              name="prioridad"
+              class="campo-entrada"
+              required>
+
+              <option value="Baja">
+                Baja
+              </option>
+
+              <option value="Media" selected>
+                Media
+              </option>
+
+              <option value="Alta">
+                Alta
+              </option>
+
+              <option value="Crítica">
+                Crítica
+              </option>
+
             </select>
+
           </div>
 
+
+
+          <!-- ESTADO -->
           <div class="grupo-campo">
-            <label for="estado">Estado</label>
-            <select id="estado" name="estado" class="campo-entrada" required>
-              <option value="abierto" selected>Abierto</option>
-              <option value="en-progreso">En progreso</option>
-              <option value="cerrado">Cerrado</option>
+
+            <label for="estado">
+              Estado
+            </label>
+
+            <!--
+              Al CREAR un ticket el backend siempre
+              establece automáticamente:
+
+              status = "Abierta"
+
+              Este campo nos servirá principalmente
+              cuando implementemos la edición.
+            -->
+            <select
+              id="estado"
+              name="estado"
+              class="campo-entrada"
+              required>
+
+              <option value="Abierta" selected>
+                Abierta
+              </option>
+
+              <option value="En progreso">
+                En progreso
+              </option>
+
+              <option value="Resuelta">
+                Resuelta
+              </option>
+
+              <option value="Cerrada">
+                Cerrada
+              </option>
+
             </select>
+
           </div>
+
         </div>
 
+
+
+        <!-- =================================================
+             BOTONES
+             ================================================= -->
         <div class="acciones-formulario">
-          <button type="submit" class="boton boton-primario">Guardar</button>
-          <a href="tickets.html" class="boton boton-secundario">Cancelar</a>
+
+          <!--
+            Al pulsar Guardar se produce el evento
+            "submit" que captura app.js.
+          -->
+          <button
+            type="submit"
+            class="boton boton-primario">
+
+            Guardar
+
+          </button>
+
+
+          <!-- Volver al listado sin guardar -->
+          <a
+            href="tickets.html"
+            class="boton boton-secundario">
+
+            Cancelar
+
+          </a>
+
         </div>
+
       </form>
+
     </section>
+
   </main>
 
+
+
+  <!-- =====================================================
+       JAVASCRIPT DE NOVA
+       =====================================================
+
+       Este fichero controla:
+
+       - Registro
+       - Login
+       - Logout
+       - Listado de tickets
+       - Creación de tickets
+       - Más adelante edición y eliminación
+  -->
+  <script src="./js/app.js"></script>
+
 </body>
+
 </html>
+```
